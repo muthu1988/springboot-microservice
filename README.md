@@ -5,7 +5,7 @@ Microservice basic architecture implementation using spring boot
   2. Simple restfull microservices
   3. Api gateway
   4. Config server
-  5. Client side Load balancer (openfeigh)
+  5. Client side Load balancer (openfeign)
   6. CIrcuit breaker (resilience4j)
 
 ## 1. Naming Server:
@@ -200,7 +200,7 @@ Microservice basic architecture implementation using spring boot
         Hit: http://localhost:8210/servicetwo/greet (should get a json {"greetings": "Hi",  "env": "8210"} - returning the port 8210)
         http://localhost:8761/ should display a dashboard with 2 instances of microservice-two registered
     
-## 8. Microservices one - Client side load balancing (OpenFeigh)
+## 8. Microservices one - Client side load balancing (openfeign)
 
   Enable microservice-one to call miroservice-two by looking up eureka along with client side load balancing
     
