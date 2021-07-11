@@ -1,10 +1,12 @@
 # springboot-microservice
 Microservice basic architecture implementation using spring boot
 
-1. Naming service
-2. Simple restfull microservice
-3. Api gateway
-4. Config server
+  1. Naming service
+  2. Simple restfull microservices
+  3. Api gateway
+  4. Config server
+  5. Client side Load balancer (openfeigh)
+  6. CIrcuit breaker (resilience4j)
 
 ## 1. Naming Server:
 
@@ -255,3 +257,37 @@ Microservice basic architecture implementation using spring boot
    ### Start Application:
         Hit: http://localhost:8765/microservice-one/serviceone/sayhello/muthu (should return "Hello muthu stage & Hi from 8200")
         Hit: http://localhost:8765/microservice-two/servicetwo/greet (should return "{"greetings":"Hi","env":"8200"}")
+
+## 10. Circuit Breaker - microservice-two
+
+  ### Add resilienace4j dependecy to pom.xml (microservice-two)
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>io.github.resilience4j</groupId>
+          <artifactId>resilience4j-spring-boot2</artifactId>
+        </dependency>
+    
+  ### Lets add a new controller to test circuit breaker
+          @RestController
+          public class CircuitBreakingTestController {
+
+              @GetMapping("/test")
+              @CircuitBreaker(name = "test-api", fallbackMethod = "fallBackMethod")
+              public String actualMethod() {
+                  int i = 1/0;
+                  return "circuit breaker method";
+              }
+
+              public String fallBackMethod() {
+                  return "fallback method";
+              }
+
+          }
+    
+   Hit: http://localhost:8200/test (should return "circuit breaker method")
+   Lets introduce an runtime exception in test route by adding "int i = 1/0;"
+   Hit: http://localhost:8200/test (should return "fallback method")
+
