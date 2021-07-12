@@ -6,7 +6,7 @@ Microservice basic architecture implementation using spring boot
   3. Api gateway
   4. Config server
   5. Client side Load balancer (openfeign)
-  6. CIrcuit breaker (resilience4j)
+  6. Circuit breaker (resilience4j)
 
 ## 1. Naming Server:
 
