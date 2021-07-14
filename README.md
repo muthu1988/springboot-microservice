@@ -7,6 +7,7 @@ Microservice basic architecture implementation using spring boot
   4. Config server
   5. Client side Load balancer (openfeign)
   6. Circuit breaker (resilience4j)
+  7. Distributed tracing (sleuth, zipkin)
 
 ## 1. Naming Server:
 
@@ -290,4 +291,37 @@ Microservice basic architecture implementation using spring boot
    Hit: http://localhost:8200/test (should return "circuit breaker method")
    Lets introduce an runtime exception in test route by adding "int i = 1/0;"
    Hit: http://localhost:8200/test (should return "fallback method")
+   
+## 11. Zipkin - for distributed tracing
+
+   ### Download zipkin jar and run the same from [zipkin website](https://zipkin.io/pages/quickstart.html). (can use docker on clound)
+
+   Hit: http://localhost:9411/ (should see zipkin ui)
+
+   ### In api-gateway, microservice-one and microservice-two add below dependecies (sleuth will add unique id to a transaction & send data to zipkin)
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+
+   ### Also in application.properties add below property:
+
+        spring.sleuth.sampler.probability=1
+
+   ### Restart all 3 service:
+
+   Hit: http://localhost:8765/microservice-one/serviceone/sayhello/muthu (gateway endpoint)
+
+   Check http://localhost:9411/ (should display a trace of the request as shown below)
+   
+   ![zipkin-1](https://user-images.githubusercontent.com/17717124/125571580-338072d3-cc8b-4d27-bdda-1bb4faa08c2d.png)
+   ![zipkin-2](https://user-images.githubusercontent.com/17717124/125571589-d5ebee9d-1efc-4ddd-930b-e320942ef25c.png)
+
+
+        
 
